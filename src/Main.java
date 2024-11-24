@@ -16,6 +16,6 @@ public class Main {
         long tempsDepart = System.currentTimeMillis();
         resolveur.resolution();
         long tempsFin = System.currentTimeMillis();
-        System.out.println("Temps de résolution: " + (tempsFin - tempsDepart) + " m4s");
+        System.out.println("Temps de résolution: " + (tempsFin - tempsDepart) + " ms");
     }
 }

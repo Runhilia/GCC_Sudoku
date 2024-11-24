@@ -110,12 +110,37 @@ public class ResolveurSudoku {
      * @param grille la grille à afficher
      */
     private void afficheGrille(int[][] grille) {
-        for (int i = 0; i < this.tailleGrille; i++) {
-            for (int j = 0; j < this.tailleGrille; j++) {
-                System.out.print(grille[i][j] + " ");
-            }
-            System.out.println();
+        int sousGrilleTaille = (int) Math.sqrt(this.tailleGrille);
+        
+        String separator = "";
+        for (int i = 0; i < this.tailleGrille * 2 + sousGrilleTaille + 1; i++) {
+            separator += "-"; 
         }
-        System.out.println();
-    }
-}
+    
+        for (int i = 0; i < this.tailleGrille; i++) {
+            // horizontal separator
+            if (i % sousGrilleTaille == 0) {
+                System.out.println(separator);
+            }
+    
+            for (int j = 0; j < this.tailleGrille; j++) {
+                // Vertical separator 
+                if (j % sousGrilleTaille == 0) {
+                    System.out.print("| ");
+                }
+    
+                
+                if (grille[i][j] == 0) {
+                    System.out.print(" . "); // Empty cells 
+                } else {
+                    // alignment
+                    System.out.print(String.format("%2d ", grille[i][j]));
+                }
+            }
+            //vertical border
+            System.out.println("|");
+        }
+    
+        // line of separation
+        System.out.println(separator);
+    }}
