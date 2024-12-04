@@ -1,13 +1,18 @@
 package src;
 
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.variables.IntVar;
+
+import java.util.List;
+import javax.swing.GroupLayout;
 
 public class ResolveurSudoku {
 
     private final int tailleSousGrille;
     private final int tailleGrille;
     private final Model model;
+    private int[][] grille;
 
     /**
      * Constructeur d'un résolveur de sudoku
@@ -17,6 +22,9 @@ public class ResolveurSudoku {
         this.tailleSousGrille = tailleSousGrille; // Taille de la sous-grille
         this.tailleGrille = tailleSousGrille * tailleSousGrille; // Taille de la grille
         this.model = new Model("Sudoku"); // Crée le modèle
+        this.grille = new int[tailleGrille][tailleGrille];
+        GenerateurGrille generateur = new GenerateurGrille(this.tailleGrille);
+        grille = generateur.getGrille();
     }
 
     /**
@@ -38,8 +46,14 @@ public class ResolveurSudoku {
         int[][] grilleInitiale = genereGrilleInitiale(grille);
         afficheGrille(grilleInitiale);
 
-        // Résout le problème et affiche la solution si elle existe
-        if (model.getSolver().solve()) {
+
+        model.getSolver().limitSolution(10); // Limite à 10 solutions
+
+        // Résolution
+        int solutionCount = 0;
+        while (model.getSolver().solve()) {
+            solutionCount++;
+            System.out.println("Solution #" + solutionCount);
             int[][] grilleFinale = new int[this.tailleGrille][this.tailleGrille];
             for (int i = 0; i < this.tailleGrille; i++) {
                 for (int j = 0; j < this.tailleGrille; j++) {
@@ -47,9 +61,9 @@ public class ResolveurSudoku {
                 }
             }
             afficheGrille(grilleFinale);
-        } else {
-            System.out.println("Pas de solution");
         }
+
+        System.out.println("Nombre total de solutions trouvées : " + solutionCount);
     }
 
     /**
@@ -103,6 +117,51 @@ public class ResolveurSudoku {
             }
         }
         return grilleInitiale;
+    }
+
+
+    public boolean backtracking(){
+        for(int row = 0; row < this.tailleGrille; row++){
+            for(int col = 0; col< this.tailleGrille; col++){
+                if (grille[row][col] == 0){
+                    for(int value = 1; value <= this.tailleGrille; value++){
+                        if (isValid(row, col, value)){
+                            grille[row][col] = value;
+                            if (backtracking()){
+                                return true;
+                            } else {
+                                grille[row][col] = 0;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        afficheGrille(grille);
+        return true;
+    }
+
+    private boolean isValid(int row, int col, int value){
+        for(int i=0; i< this.tailleGrille; i++){
+            if (grille[row][i] == value || grille[i][col] == value){
+                return false;
+            }
+        }
+
+        // Vérifier la sous-grille
+        int startRow = row - row % tailleSousGrille;
+        int startCol = col - col % tailleSousGrille;
+        for (int i = 0; i < tailleSousGrille; i++) {
+            for (int j = 0; j < tailleSousGrille; j++) {
+                if (grille[startRow + i][startCol + j] == value) {
+                    return false;
+                }
+            }
+        }
+
+        return true; // Le placement est sûr
+
     }
 
     /**
