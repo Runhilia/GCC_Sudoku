@@ -14,7 +14,14 @@ public class Main {
 
         ResolveurSudoku resolveur = new ResolveurSudoku(subgridSize);
         long tempsDepart = System.currentTimeMillis();
-        resolveur.resolution();
+        //resolveur.resolution();
+
+        if(resolveur.backtracking()){
+            System.out.println("Solution trouvée");
+        } else {
+            System.out.println("Pas de solution");
+        }
+
         long tempsFin = System.currentTimeMillis();
         System.out.println("Temps de résolution: " + (tempsFin - tempsDepart) + " ms");
     }
