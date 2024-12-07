@@ -13,7 +13,6 @@ public class GenerateurGrilleValide {
         remplirGrille(0, 0);
     }
 
-    // backtracking
     private boolean remplirGrille(int i, int j) {
         if (i == this.tailleGrille) {
             return true;

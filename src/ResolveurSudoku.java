@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.variables.IntVar;
@@ -24,7 +25,7 @@ public class ResolveurSudoku {
         this.model = new Model("Sudoku"); // Crée le modèle
         this.grille = new int[tailleGrille][tailleGrille];
         GenerateurGrille generateur = new GenerateurGrille(this.tailleGrille);
-        grille = generateur.getGrille();
+        this.grille = generateur.getGrille();
     }
 
     /**
@@ -161,7 +162,78 @@ public class ResolveurSudoku {
         }
 
         return true; // Le placement est sûr
+    }
 
+    private int[][] compteContraintes(){
+        int[][] contraintes = new int[tailleGrille][tailleGrille];
+        for(int i = 0; i < this.tailleGrille; i++){
+            for(int j = 0; j < this.tailleGrille; j++){
+                if(grille[i][j] == 0){
+                    // parcours la ligne de compte les contraintes
+                    for(int k = 0; k < this.tailleGrille; k++){
+                        contraintes[i][j] += grille[i][k] == 0 ? 0 : 1;
+                    }
+                    //parcours la colonne de compte les contraintes
+                    for(int k = 0; k < this.tailleGrille; k++){
+                        contraintes[i][j] += grille[k][j] == 0 ? 0 : 1;
+                    }
+                    //parcours la sous-grille de compte les contraintes
+                    int sousGrilleTaille = (int) Math.sqrt(this.tailleGrille);
+                    int startRow = i - i % sousGrilleTaille;
+                    int startCol = j - j % sousGrilleTaille;
+                    for (int k = 0; k < sousGrilleTaille; k++) {
+                        for (int l = 0; l < sousGrilleTaille; l++) {
+                            int r = startRow + k;
+                            int c = startCol + l;
+
+                            // Vérifie que la case n'est pas sur la même ligne ou colonne
+                            if (r != i && c != j) {
+                                contraintes[i][j] += grille[r][c] == 0 ? 0 : 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return contraintes;
+    }
+
+    public boolean gloutonPlusContraint(){
+        int[][] contraintes = compteContraintes();
+        
+        //sort the cells by the number of constraints
+        List<int[]> cells = new ArrayList<>();
+        for(int i = 0; i < this.tailleGrille; i++){
+            for(int j = 0; j < this.tailleGrille; j++){
+                if(grille[i][j] == 0){
+                    cells.add(new int[]{i, j, contraintes[i][j]});
+                }
+            }
+        }
+        //trier du plus grand nombre de contraintes au plus petit
+        cells.sort((a, b) -> Integer.compare(b[2], a[2]));
+
+        for(int[] cell : cells){
+            int row = cell[0];
+            int col = cell[1];
+            if (grille[row][col] == 0){
+                for(int value = 1; value <= this.tailleGrille; value++){
+                    if (isValid(row, col, value)){
+                        grille[row][col] = value;
+                        if (gloutonPlusContraint()){
+                            return true;
+                        } else {
+                            grille[row][col] = 0;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
+
+        afficheGrille(grille);
+        return true;
     }
 
     /**
