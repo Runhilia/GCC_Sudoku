@@ -10,7 +10,7 @@ public class GenerateurGrilleValide {
     public GenerateurGrilleValide(int tailleGrille) {
         this.tailleGrille = tailleGrille;
         this.grille = new int[tailleGrille][tailleGrille];
-        remplirGrille(0, 0); 
+        remplirGrille(0, 0);
     }
 
     // backtracking
@@ -64,7 +64,7 @@ public class GenerateurGrilleValide {
 
     public void enleverElements(int nombreDeCases) {
         Random random = new Random();
-        int casesEnlevees = 1;
+        int casesEnlevees = 0;
         
         while (casesEnlevees < nombreDeCases) {
             int i = random.nextInt(this.tailleGrille);

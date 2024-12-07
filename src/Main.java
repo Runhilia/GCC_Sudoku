@@ -13,13 +13,23 @@ public class Main {
         int subgridSize = scanner.nextInt();
 
         ResolveurSudoku resolveur = new ResolveurSudoku(subgridSize);
-        long tempsDepart = System.currentTimeMillis();
-        //resolveur.resolution();
 
-        if(resolveur.backtracking()){
-            System.out.println("Solution trouvée");
-        } else {
-            System.out.println("Pas de solution");
+        System.out.println("Quelle méthode souhaitez-vous utiliser pour résoudre le sudoku ?");
+        System.out.println("1. Résolution classique avec Choco Solver");
+        System.out.println("2. Résolution avec backtracking");
+        int choix = scanner.nextInt();
+        long tempsDepart = System.currentTimeMillis();
+
+        switch (choix) {
+            case 1:
+                resolveur.resolution();
+                break;
+            case 2:
+                resolveur.backtracking();
+                break;
+            default:
+                System.out.println("Choix invalide");
+                break;
         }
 
         long tempsFin = System.currentTimeMillis();
