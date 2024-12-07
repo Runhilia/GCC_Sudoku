@@ -1,4 +1,4 @@
-package src;
+package src.Generateurs;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +14,7 @@ public final class GenerateurGrilleValide {
         this.tailleGrille = tailleGrille;
         this.grille = new int[tailleGrille][tailleGrille];
         this.remplirGrille(0, 0);
-        this.enleverElements(tailleGrille * tailleGrille / 4);
+        this.enleverElements(tailleGrille * tailleGrille / 2);
     }
 
     private boolean remplirGrille(int i, int j) {
