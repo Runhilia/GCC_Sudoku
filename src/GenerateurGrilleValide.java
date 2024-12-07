@@ -1,8 +1,11 @@
 package src;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
-public class GenerateurGrilleValide {
+public final class GenerateurGrilleValide {
 
     private int tailleGrille;
     private int[][] grille;
@@ -10,7 +13,8 @@ public class GenerateurGrilleValide {
     public GenerateurGrilleValide(int tailleGrille) {
         this.tailleGrille = tailleGrille;
         this.grille = new int[tailleGrille][tailleGrille];
-        remplirGrille(0, 0);
+        this.remplirGrille(0, 0);
+        this.enleverElements(tailleGrille * tailleGrille / 4);
     }
 
     private boolean remplirGrille(int i, int j) {
@@ -21,11 +25,9 @@ public class GenerateurGrilleValide {
         int nextI = (j == this.tailleGrille - 1) ? i + 1 : i;
         int nextJ = (j + 1) % this.tailleGrille;
         
-        if (this.grille[i][j] != 0) {
-            return remplirGrille(nextI, nextJ);
-        }
+        List<Integer> valeurs = genererValAleatoire();
         
-        for (int num = 1; num <= this.tailleGrille; num++) {
+        for(int num : valeurs) {
             if (respecteContraintes(i, j, num)) {
                 this.grille[i][j] = num;
                 
@@ -38,6 +40,16 @@ public class GenerateurGrilleValide {
         }
         
         return false;
+    }
+
+    private List<Integer> genererValAleatoire() {
+        List<Integer> valeurs = new ArrayList<>();
+        for (int i = 1; i <= this.tailleGrille; i++) {
+            valeurs.add(i);
+        }
+        
+        Collections.shuffle(valeurs);
+        return valeurs;
     }
 
     private boolean respecteContraintes(int i, int j, int valeur) {
