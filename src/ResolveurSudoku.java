@@ -170,6 +170,10 @@ public class ResolveurSudoku {
     public void rechercheLocale() {
         // Génère une solution initiale fausse
         GenerateurSolutionFausse generateur = new GenerateurSolutionFausse(this.tailleGrille);
+        ArrayList<int[]> listeCasesModifiables = generateur.getListeCasesModifiables();
+        for (int[] caseModifiable : listeCasesModifiables) {
+            System.out.println("Case modifiable: " + caseModifiable[0] + ", " + caseModifiable[1]);
+        }
         int[][] solution = generateur.getGrille();
         afficheGrille(solution);
 
@@ -179,7 +183,7 @@ public class ResolveurSudoku {
 
         // Recherche locale
         for (int i = 0; i < 10000000; i++) {
-            int[][] solutionVoisine = genererSolutionVoisine(solution);
+            int[][] solutionVoisine = genererSolutionVoisine(solution, listeCasesModifiables);
             int evaluationVoisine = evaluationSolution(solutionVoisine);
 
             // Si la solution voisine est meilleure, on la garde
@@ -200,18 +204,21 @@ public class ResolveurSudoku {
     /**
      * Génère une solution voisine en changeant une case aléatoire
      * @param solution la solution actuelle
+     * @param listeCasesModifiables la liste des cases modifiables
      * @return la solution voisine
      */
-    private int[][] genererSolutionVoisine(int[][] solution) {
+    private int[][] genererSolutionVoisine(int[][] solution, ArrayList<int[]> listeCasesModifiables) {
         // On copie la solution actuelle
         int[][] solutionVoisine = new int[this.tailleGrille][this.tailleGrille];
         for (int i = 0; i < this.tailleGrille; i++) {
             System.arraycopy(solution[i], 0, solutionVoisine[i], 0, this.tailleGrille);
         }
 
-        // On choisit une case aléatoire
-        int ligne = (int) (Math.random() * this.tailleGrille);
-        int colonne = (int) (Math.random() * this.tailleGrille);
+        // On choisit une case aléatoire parmi les cases modifiables
+        int index = (int) (Math.random() * listeCasesModifiables.size());
+        int[] caseModifiable = listeCasesModifiables.get(index);
+        int ligne = caseModifiable[0];
+        int colonne = caseModifiable[1];
 
         // On choisit une valeur aléatoire
         int valeur = (int) (Math.random() * this.tailleGrille) + 1;

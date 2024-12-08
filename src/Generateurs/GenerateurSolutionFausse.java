@@ -1,14 +1,12 @@
 package src.Generateurs;
 
-import org.chocosolver.solver.variables.IntVar;
-
 import java.util.*;
 
 public class GenerateurSolutionFausse {
 
     private int tailleGrille;
     private int[][] grille;
-    private ArrayList<Integer> valeursPossibles = new ArrayList<>();
+    private final ArrayList<int[]> listeCasesModifiables = new ArrayList<>();
 
     /**
      * Constructeur d'une solution fausse pour la recherche locale
@@ -17,6 +15,10 @@ public class GenerateurSolutionFausse {
     public GenerateurSolutionFausse(int tailleGrille) {
         this.tailleGrille = tailleGrille;
         this.grille = new int[tailleGrille][tailleGrille];
+        // On génère une grille valide
+        GenerateurGrilleValide generateurGrilleValide = new GenerateurGrilleValide(tailleGrille);
+        this.grille = generateurGrilleValide.getGrille();
+        // On ajoute des valeurs aléatoires dans la grille pour constituer une solution fausse
         this.remplirCaseAleatoire();
     }
 
@@ -25,34 +27,14 @@ public class GenerateurSolutionFausse {
      */
     private void remplirCaseAleatoire() {
         for (int ligne = 0; ligne < this.tailleGrille; ligne++) {
-            this.genererListeValeursPossibles(); // On récupère dans une liste les valeurs possibles pour chaque case
             for (int colonne = 0; colonne < this.tailleGrille; colonne++) {
-                this.tirerValeurAleatoire(ligne, colonne, this.valeursPossibles); // On tire une valeur aléatoire parmi les valeurs possibles
+                if (this.grille[ligne][colonne] == 0) {
+                    this.listeCasesModifiables.add(new int[]{ligne, colonne});
+                    Random random = new Random();
+                    this.grille[ligne][colonne] = random.nextInt(this.tailleGrille) + 1;
+                }
             }
         }
-    }
-
-    /**
-     * Génère la liste des valeurs possibles pour chaque case
-     */
-    private void genererListeValeursPossibles() {
-        this.valeursPossibles = new ArrayList<>();
-        for (int i = 1; i <= this.tailleGrille; i++) {
-            this.valeursPossibles.add(i);
-        }
-    }
-
-    /**
-     * Tire une valeur aléatoire parmi les valeurs possibles
-     * @param ligne la ligne
-     * @param colonne la colonne
-     * @param valeursPossibles les valeurs possibles
-     */
-    private void tirerValeurAleatoire(int ligne, int colonne, ArrayList<Integer> valeursPossibles) {
-        Random random = new Random();
-        int index = random.nextInt(valeursPossibles.size());
-        this.grille[ligne][colonne] = valeursPossibles.get(index);
-        valeursPossibles.remove(index);
     }
 
 
@@ -62,5 +44,9 @@ public class GenerateurSolutionFausse {
      */
     public int[][] getGrille() {
         return this.grille;
+    }
+
+    public ArrayList<int[]> getListeCasesModifiables() {
+        return this.listeCasesModifiables;
     }
 }
