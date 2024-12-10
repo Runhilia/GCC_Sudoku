@@ -14,7 +14,7 @@ public final class GenerateurGrilleValide {
         this.tailleGrille = tailleGrille;
         this.grille = new int[tailleGrille][tailleGrille];
         this.remplirGrille(0, 0);
-        this.enleverElements(tailleGrille * tailleGrille / 2);
+        this.enleverElements(tailleGrille * tailleGrille * 3 / 4);
     }
 
     private boolean remplirGrille(int i, int j) {

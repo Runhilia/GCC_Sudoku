@@ -171,9 +171,6 @@ public class ResolveurSudoku {
         // Génère une solution initiale fausse
         GenerateurSolutionFausse generateur = new GenerateurSolutionFausse(this.tailleGrille);
         ArrayList<int[]> listeCasesModifiables = generateur.getListeCasesModifiables();
-        for (int[] caseModifiable : listeCasesModifiables) {
-            System.out.println("Case modifiable: " + caseModifiable[0] + ", " + caseModifiable[1]);
-        }
         int[][] solution = generateur.getGrille();
         afficheGrille(solution);
 
@@ -182,12 +179,12 @@ public class ResolveurSudoku {
         System.out.println("Evaluation initiale: " + evaluation);
 
         // Recherche locale
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 500000; i++) {
             int[][] solutionVoisine = genererSolutionVoisine(solution, listeCasesModifiables);
             int evaluationVoisine = evaluationSolution(solutionVoisine);
 
             // Si la solution voisine est meilleure, on la garde
-            if (evaluationVoisine < evaluation) {
+            if (evaluationVoisine <= evaluation) {
                 solution = solutionVoisine;
                 evaluation = evaluationVoisine;
             }
